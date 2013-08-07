@@ -55,10 +55,10 @@ namespace AlternateController
 		}
         private int frames = 0;
         private void FixedUpdate() {
-            if (eventHandler == null) eventHandler = new EventHandler(this);
+            
             frames++;
             //Events that dont have handlers 
-            eventHandler.checkEvents(frames);
+            if (eventHandler == null) eventHandler.checkEvents(frames);
 
         }
         private void Start()
@@ -68,6 +68,8 @@ namespace AlternateController
 				ws = new WebSocketServer(81);
                 ws.AddWebSocketService<WebSocketHandler>("/");
                 ws.Start();
+
+                if (eventHandler == null) eventHandler = new EventHandler(this);
             }
 			catch (TypeInitializationException exception) {
 				print (exception.Message);
@@ -75,12 +77,13 @@ namespace AlternateController
 			catch {
 			    print ("Unhandled");	
 			}
-            if (eventHandler == null) eventHandler = new EventHandler(this);
+
 
             // Neither of these event handlers actually do what I want them to.
             // I mean, you would think they would atleast start with the editor. But nope! 
             // GameEvents.onMissionFlagSelect.Add(new EventData<string>.OnEvent(eventHandler.onFlagChange));
-             // GameEvents.onPartAttach.Add(new EventData<GameEvents.HostTargetAction<Part, Part>>.OnEvent(eventHandler.onPartAttach));
+            GameEvents.onPartAttach.Add(new EventData<GameEvents.HostTargetAction<Part, Part>>.OnEvent(eventHandler.onPartAttach));
+            GameEvents.onPartRemove.Add(new EventData<GameEvents.HostTargetAction<Part, Part>>.OnEvent(eventHandler.onPartDetach));
         }
 	        private void Awake () {      DontDestroyOnLoad(this.gameObject);       }
 		private void OnDestroy () {

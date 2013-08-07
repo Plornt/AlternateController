@@ -18,20 +18,16 @@ namespace AlternateController
         public EventHandler(KSPAlternateController parent)
         {
             this.parent = parent;
+            this.ws = WebSocketHandler.me;
         }
-    
+        private WebSocketHandler ws;
         private float prevThrot = -1;
         private GameScenes prevScene;
         private Dictionary<String, List<double>> prevVessAltVel = new Dictionary<String, List<double>>();
-        private int prevPartCount;
+        private int EditorPartCount = 0;
         private String prevFlag = "";
         public void checkEvents(int frames)
         {
-            WebSocketServer wsServer = parent.ws;
-            WebSocketHandler ws = WebSocketHandler.me;
-
-            if (ws == null || wsServer == null || !wsServer.IsListening) return;
-
             if (HighLogic.LoadedScene != prevScene)
             {
                 KSPAlternateController.print(System.Enum.GetName(typeof(GameScenes), HighLogic.LoadedScene));
@@ -57,29 +53,7 @@ namespace AlternateController
                         KSPAlternateController.print(e.Message);
                     }
                 }
-                if ((frames % 100) == 0)
-                {
-                    if (EditorLogic.startPod != null)
-                    {
-                        List<Part> shipParts = EditorLogic.fetch.getSortedShipList();
-                        if (shipParts != null)
-                        {
-                            if (shipParts.Count != prevPartCount)
-                            {
-                                EventSubscriptions.dispatchEvent(ws, KSPEvents.EDITOR_PART_COUNT_CHANGE, new EditorPartCountChange(shipParts.Count).toJson());
-                                prevPartCount = shipParts.Count;
-                            }
-                        }
-                        else
-                        {
-                            if (prevPartCount != 0)
-                            {
-                                EventSubscriptions.dispatchEvent(ws, KSPEvents.EDITOR_PART_COUNT_CHANGE, new EditorPartCountChange(0).toJson());
-                                prevPartCount = 0;
-                            }
-                        }
-                    }
-                }
+
             }
 
             if (HighLogic.LoadedScene == GameScenes.FLIGHT)
@@ -141,18 +115,23 @@ namespace AlternateController
 
         public void onFlagChange(String flagURL)
         {
-            // DOESNT DO WHAT I WANT IT TO. NO BLOODY POINT.
         }
-        
-    
+
         public void onPartAttach(GameEvents.HostTargetAction<Part,Part> parts)
         {
-            // Just double checking, I dont want to have some mod fire this event and causing an issue outside of the editor.
-            if (HighLogic.LoadedScene == GameScenes.EDITOR)
+            if (parts.host.isAttached)
             {
-                // Doesnt do what I want it to but I will use this for something else later.
+
             }
         }
+
+        public void onPartDetach(GameEvents.HostTargetAction<Part, Part> parts)
+        {
+            EditorPartCount -= parts.target.children.Count;
+            EditorPartCount -= 1;
+            EventSubscriptions.dispatchEvent(ws, KSPEvents.EDITOR_PART_COUNT_CHANGE, new EditorPartCountChange(EditorPartCount).toJson());
+        }
+
     }
 
     public class EventSubscriptions
@@ -369,6 +348,7 @@ namespace AlternateController
         {
             this.sceneName = sceneName;
             t = 8;
+			// test
         }
         public override String toJson()
         {

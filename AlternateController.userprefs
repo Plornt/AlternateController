@@ -1,16 +1,16 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="ServerToClientPackets.cs">
     <Files>
-      <File FileName="Class1.cs" Line="67" Column="17" />
+      <File FileName="ServerToClientPackets.cs" Line="27" Column="1" />
+      <File FileName="Events.cs" Line="1" Column="1" />
+      <File FileName="ClientToServerPackets.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="AlternateController" expanded="True">
-            <Node name="References" expanded="True" />
-            <Node name="Properties" expanded="True" />
-            <Node name="Class1.cs" selected="True" />
+            <Node name="Properties" selected="True" />
           </Node>
         </State>
       </Pad>

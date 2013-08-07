@@ -16,5 +16,6 @@ Global
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = AlternateController.csproj
+		outputpath = ..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\KSP_DEBUG\GameData\KSPAlternate
 	EndGlobalSection
 EndGlobal
